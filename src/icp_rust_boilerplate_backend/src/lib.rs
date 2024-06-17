@@ -146,7 +146,8 @@ thread_local! {
 
     static DOCTORS_STORAGE: RefCell<StableBTreeMap<u64, Doctor, Memory>> =
         RefCell::new(StableBTreeMap::init(
-            MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(1)))
+            MEMORY_MANAGER.with(|m| m.borrow().
+             get(MemoryId::new(1)))
     ));
 
     static PATIENTS_STORAGE: RefCell<StableBTreeMap<u64, Patient, Memory>> =
@@ -217,6 +218,11 @@ enum Message {
     InvalidPayload(String),
 }
 
+// Utility function to get the current time
+fn current_time() -> u64 {
+    time()
+}
+
 // Function to create a doctor
 #[ic_cdk::update]
 fn create_doctor(payload: DoctorPayload) -> Result<Doctor, Message> {
@@ -274,6 +280,7 @@ fn get_doctor_id(doctor_id: u64) -> Result<Doctor, Message> {
     })
 }
 
+// Function to update a doctor
 #[ic_cdk::update]
 fn update_doctor(id: u64, name: String, speciality: String) -> Result<Doctor, Message> {
     DOCTORS_STORAGE.with(|storage| {
@@ -295,6 +302,7 @@ fn update_doctor(id: u64, name: String, speciality: String) -> Result<Doctor, Me
     })
 }
 
+// Function to delete a doctor
 #[ic_cdk::update]
 fn delete_doctor(id: u64) -> Result<(), Message> {
     DOCTORS_STORAGE.with(|storage| {
@@ -307,6 +315,7 @@ fn delete_doctor(id: u64) -> Result<(), Message> {
     })
 }
 
+// Function to create a patient
 #[ic_cdk::update]
 fn create_patient(payload: PatientPayload) -> Result<Patient, Message> {
     if payload.name.is_empty() || payload.gender.is_empty() {
@@ -333,6 +342,7 @@ fn create_patient(payload: PatientPayload) -> Result<Patient, Message> {
     Ok(patient)
 }
 
+// Function to get all patients
 #[ic_cdk::query]
 fn get_patients() -> Result<Vec<Patient>, Message> {
     PATIENTS_STORAGE.with(|storage| {
@@ -350,6 +360,7 @@ fn get_patients() -> Result<Vec<Patient>, Message> {
     })
 }
 
+// Function to get a patient by ID
 #[ic_cdk::query]
 fn get_patient_by_id(id: u64) -> Result<Patient, Message> {
     PATIENTS_STORAGE.with(|storage| {
@@ -362,6 +373,7 @@ fn get_patient_by_id(id: u64) -> Result<Patient, Message> {
     })
 }
 
+// Function to update a patient
 #[ic_cdk::update]
 fn update_patient(id: u64, name: String, age: u32, gender: String) -> Result<Patient, Message> {
     PATIENTS_STORAGE.with(|storage| {
@@ -384,6 +396,7 @@ fn update_patient(id: u64, name: String, age: u32, gender: String) -> Result<Pat
     })
 }
 
+// Function to delete a patient
 #[ic_cdk::update]
 fn delete_patient(id: u64) -> Result<(), Message> {
     PATIENTS_STORAGE.with(|storage| {
@@ -396,6 +409,7 @@ fn delete_patient(id: u64) -> Result<(), Message> {
     })
 }
 
+// Function to create an appointment
 #[ic_cdk::update]
 fn create_appointment(payload: AppointmentPayload) -> Result<Appointment, Message> {
     if payload.description.is_empty() {
@@ -449,6 +463,7 @@ fn create_appointment(payload: AppointmentPayload) -> Result<Appointment, Messag
     Ok(appointment)
 }
 
+// Function to get all appointments
 #[ic_cdk::query]
 fn get_appointments() -> Result<Vec<Appointment>, Message> {
     APPOINTMENTS_STORAGE.with(|storage| {
@@ -466,6 +481,7 @@ fn get_appointments() -> Result<Vec<Appointment>, Message> {
     })
 }
 
+// Function to get an appointment by ID
 #[ic_cdk::query]
 fn get_appointment_id(id: u64) -> Result<Appointment, Message> {
     APPOINTMENTS_STORAGE.with(|storage| {
@@ -478,6 +494,7 @@ fn get_appointment_id(id: u64) -> Result<Appointment, Message> {
     })
 }
 
+// Function to update an appointment
 #[ic_cdk::update]
 fn update_appointment(
     id: u64,
@@ -510,6 +527,7 @@ fn update_appointment(
     })
 }
 
+// Function to delete an appointment
 #[ic_cdk::update]
 fn delete_appointment(id: u64) -> Result<(), Message> {
     APPOINTMENTS_STORAGE.with(|storage| {
@@ -522,6 +540,7 @@ fn delete_appointment(id: u64) -> Result<(), Message> {
     })
 }
 
+// Function to create a patient record
 #[ic_cdk::update]
 fn create_patient_record(payload: PatientRecordPayload) -> Result<PatientRecord, Message> {
     if payload.diagnosis.is_empty() || payload.treatment.is_empty() {
@@ -574,6 +593,7 @@ fn create_patient_record(payload: PatientRecordPayload) -> Result<PatientRecord,
     Ok(patient_record)
 }
 
+// Function to get all patient records
 #[ic_cdk::query]
 fn get_patient_records() -> Result<Vec<PatientRecord>, Message> {
     PATIENT_RECORDS_STORAGE.with(|storage| {
@@ -591,6 +611,7 @@ fn get_patient_records() -> Result<Vec<PatientRecord>, Message> {
     })
 }
 
+// Function to get a patient record by ID
 #[ic_cdk::query]
 fn get_patient_record_by_id(id: u64) -> Result<PatientRecord, Message> {
     PATIENT_RECORDS_STORAGE.with(|storage| {
@@ -603,6 +624,7 @@ fn get_patient_record_by_id(id: u64) -> Result<PatientRecord, Message> {
     })
 }
 
+// Function to update a patient record
 #[ic_cdk::update]
 fn update_patient_record(
     id: u64,
@@ -636,6 +658,7 @@ fn update_patient_record(
     })
 }
 
+// Function to delete a patient record
 #[ic_cdk::update]
 fn delete_patient_record(id: u64) -> Result<(), Message> {
     PATIENT_RECORDS_STORAGE.with(|storage| {
@@ -648,6 +671,7 @@ fn delete_patient_record(id: u64) -> Result<(), Message> {
     })
 }
 
+// Function to create a medication
 #[ic_cdk::update]
 fn create_medication(payload: MedicationPayload) -> Result<Medication, Message> {
     if payload.name.is_empty() || payload.dosage.is_empty() || payload.frequency.is_empty() {
@@ -687,6 +711,7 @@ fn create_medication(payload: MedicationPayload) -> Result<Medication, Message> 
     Ok(medication)
 }
 
+// Function to get all medications
 #[ic_cdk::query]
 fn get_medications() -> Result<Vec<Medication>, Message> {
     MEDICATIONS_STORAGE.with(|storage| {
@@ -704,6 +729,7 @@ fn get_medications() -> Result<Vec<Medication>, Message> {
     })
 }
 
+// Function to get a medication by ID
 #[ic_cdk::query]
 fn get_medication_by_id(id: u64) -> Result<Medication, Message> {
     MEDICATIONS_STORAGE.with(|storage| {
@@ -716,6 +742,7 @@ fn get_medication_by_id(id: u64) -> Result<Medication, Message> {
     })
 }
 
+// Function to update a medication
 #[ic_cdk::update]
 fn update_medication(
     id: u64,
@@ -745,6 +772,7 @@ fn update_medication(
     })
 }
 
+// Function to delete a medication
 #[ic_cdk::update]
 fn delete_medication(id: u64) -> Result<(), Message> {
     MEDICATIONS_STORAGE.with(|storage| {
@@ -757,14 +785,11 @@ fn delete_medication(id: u64) -> Result<(), Message> {
     })
 }
 
-fn current_time() -> u64 {
-    time()
-}
-
 #[derive(candid::CandidType, Deserialize, Serialize)]
 enum Error {
     NotFound { msg: String },
     UnAuthorized { msg: String },
 }
 
+// Need this to generate candid
 ic_cdk::export_candid!();
